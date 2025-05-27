@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>SOAP Hello UI</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 40px;
+        background-color: #f2f2f2;
+        text-align: center;
+      }
+
+      h2 {
+        color: #333;
+      }
+
+      input[type="text"] {
+        padding: 10px;
+        font-size: 16px;
+        width: 300px;
+        margin-top: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+
+      button {
+        padding: 10px 20px;
+        font-size: 16px;
+        margin-left: 10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      h3 {
+        margin-top: 40px;
+        color: #444;
+      }
+
+      pre {
+        background-color: #fff;
+        padding: 15px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        width: 80%;
+        margin: 0 auto;
+        text-align: left;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>SOAP Hello UI</h2>
+    <input type="text" id="nameInput" placeholder="Enter your name..." />
+    <button onclick="callSayHello()">Say Hello!</button>
+
+    <h3>Response:</h3>
+    <pre id="responseBox">Waiting for response...</pre>
+
+    <script>
+      async function callSayHello() {
+        const name = document.getElementById("nameInput").value;
+        const url = "http://localhost:8000/wsdl";
+
+        const soapEnvelope = `
+        <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                          xmlns:hel="http://example.com/hello">
+          <soapenv:Header/>
+          <soapenv:Body>
+            <hel:sayHello>
+              <name>${name}</name>
+            </hel:sayHello>
+          </soapenv:Body>
+        </soapenv:Envelope>
+      `;
+
+        try {
+          const res = await fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "text/xml;charset=UTF-8",
+              SOAPAction: "sayHello",
+            },
+            body: soapEnvelope,
+          });
+
+          const text = await res.text();
+          console.log("Raw SOAP Response:", text);
+
+          const match = text.match(/<greeting>(.*)<\/greeting>/);
+          const greeting = match ? match[1] : "No greeting found";
+
+          document.getElementById("responseBox").textContent = greeting;
+        } catch (error) {
+          document.getElementById("responseBox").textContent =
+            "Error: " + error;
+        }
+      }
+    </script>
+  </body>
+</html>
