@@ -1,17 +1,15 @@
 {
   "name": "soap-service",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "A simple SOAP Hello World service using Express and strong-soap",
+  "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "node server.js"
   },
-  "keywords": [],
-  "author": "",
+  "author": "Shruti Mishra",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "express": "^5.1.0",
-    "nodemon": "^3.1.9",
     "strong-soap": "^4.1.11"
   }
 }
